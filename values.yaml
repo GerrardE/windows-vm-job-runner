@@ -1,0 +1,35 @@
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+namespace: infra
+nameOverride: windows-vm-job-runner
+jobs:
+  - name: windows-vm
+    image:
+      repository: nicolaka/netshoot
+      tag: latest
+      imagePullPolicy: IfNotPresent
+    schedule: "0 2 * * 6" # run this cron every saturday of the week at 2am
+    failedJobsHistoryLimit: 2
+    successfulJobsHistoryLimit: 5
+    concurrencyPolicy: Allow
+    restartPolicy: Never
+    resources:
+      limits:
+        cpu: 50m
+        memory: 256Mi
+      requests:
+        cpu: 50m
+        memory: 256Mi
+    env:
+      - name: http_proxy # incase proxy is required
+        value: http://<ip-address>:<port>
+      - name: https_proxy
+        value: https://<ip-address>:<port>
+    command:
+      - /bin/bash
+      - -c
+      - servers=('<ip-address-1>' '<ip-address-2>' '<ip-address-3>');
+        for i in "${servers[@]}"; 
+        do 
+          curl -u username:jenkins-api-token "http://<jenkins-host>:8080/job/<job-folder>/job/<job-name>/buildWithParameters?token=token&ipaddress=$i&username=<windows-vm-user>&password=<windows-vm-password>";
+        done;

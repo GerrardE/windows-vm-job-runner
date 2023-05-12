@@ -1,0 +1,12 @@
+apiVersion: v2
+name: windows
+description: A chart for windows jobs
+version: 1.0.1
+keywords:
+  - cron
+home: "https://github.com/bambash"
+sources:
+  - "https://github.com/bambash"
+maintainers:
+  - name: bambash
+    email: bambash256@gmail.com
